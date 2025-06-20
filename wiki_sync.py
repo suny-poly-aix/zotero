@@ -335,8 +335,8 @@ def main():
     
     # Configuration
     wiki_urls = [
-        "https://en.wikiversity.org/wiki/AIXworkbench/Papers/Building-the-Workbench",
-        # Add more wiki URLs here
+        "https://en.wikiversity.org/wiki/AIXworkbench/Papers/Building-the-Workbench", "https://en.wikiversity.org/wiki/AIXworkbench/Papers/Building-the-Workbench/Open-WebUI"
+        
     ]
     
     print("Starting automated Zotero-Wiki sync...")
