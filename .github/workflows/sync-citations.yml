@@ -9,11 +9,11 @@ on:
   # Also allow manual running
   workflow_dispatch:
   
-  # Run when the .bib file is updated
+  # Run when the script is updated
   push:
     paths:
-      - 'references.bib'
       - 'wiki_sync.py'
+      - '.github/workflows/sync-citations.yml'
 
 jobs:
   sync-citations:
@@ -24,7 +24,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
     
-    # Step 2: Set up Python (the programming language we're using)
+    # Step 2: Set up Python
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
@@ -33,10 +33,13 @@ jobs:
     # Step 3: Install required tools
     - name: Install dependencies
       run: |
-        pip install requests bibtexparser
+        pip install requests
     
-    # Step 4: Run our citation sync script
-    - name: Run wiki citation sync
+    # Step 4: Run the wiki citation sync with Zotero API
+    - name: Run automated Zotero sync
+      env:
+        ZOTERO_API_KEY: ${{ secrets.ZOTERO_API_KEY }}
+        ZOTERO_USER_ID: ${{ secrets.ZOTERO_USER_ID }}
       run: |
         python wiki_sync.py
     
@@ -49,6 +52,14 @@ jobs:
         if git diff --staged --quiet; then
           echo "No changes to commit"
         else
-          git commit -m "Auto-sync: Added new citations from wiki pages"
+          git commit -m "Auto-sync: Updated references.bib from Zotero after wiki sync"
           git push
         fi
+    
+    # Step 6: Create a summary of what happened
+    - name: Create sync summary
+      run: |
+        echo "## Sync Summary" >> $GITHUB_STEP_SUMMARY
+        echo "- Workflow completed successfully" >> $GITHUB_STEP_SUMMARY
+        echo "- Check the logs above for details on new citations added" >> $GITHUB_STEP_SUMMARY
+        echo "- Updated references.bib file is now available in the repository" >> $GITHUB_STEP_SUMMARY
