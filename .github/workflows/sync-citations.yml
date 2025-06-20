@@ -1,0 +1,54 @@
+name: Sync Wiki Citations to Zotero
+
+# When should this automation run?
+on:
+  # Run every day at 6 AM UTC
+  schedule:
+    - cron: '0 6 * * *'
+  
+  # Also allow manual running
+  workflow_dispatch:
+  
+  # Run when the .bib file is updated
+  push:
+    paths:
+      - 'references.bib'
+      - 'wiki_sync.py'
+
+jobs:
+  sync-citations:
+    runs-on: ubuntu-latest
+    
+    steps:
+    # Step 1: Get the files from your repository
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    
+    # Step 2: Set up Python (the programming language we're using)
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+    
+    # Step 3: Install required tools
+    - name: Install dependencies
+      run: |
+        pip install requests bibtexparser
+    
+    # Step 4: Run our citation sync script
+    - name: Run wiki citation sync
+      run: |
+        python wiki_sync.py
+    
+    # Step 5: Save any changes back to your repository
+    - name: Commit and push changes
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add references.bib
+        if git diff --staged --quiet; then
+          echo "No changes to commit"
+        else
+          git commit -m "Auto-sync: Added new citations from wiki pages"
+          git push
+        fi
