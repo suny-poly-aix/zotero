@@ -176,8 +176,7 @@ def main():
     """
     # Configuration - you'll need to update these
     wiki_urls = [
-        "https://en.wikiversity.org/wiki/AIXworkbench/Papers/Building-the-Workbench",
-        # Add more wiki page URLs here as needed
+        "https://en.wikiversity.org/wiki/AIXworkbench/Papers/Building-the-Workbench"
     ]
     
     bib_file_path = "references.bib"  # Path to your .bib file
